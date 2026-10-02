@@ -1,8 +1,7 @@
-name: voici
+name: voici-env
 channels:
-  - https://prefix.dev/emscripten-forge-dev
-  - https://prefix.dev/conda-forge
+  - https://repo.prefix.dev/emscripten-forge-dev
+  - https://repo.prefix.dev/conda-forge
 dependencies:
   - xeus-python
-  - pandas
-  - bqplot
+  - ipywidgets
