@@ -1,6 +1,6 @@
 # ==========================================================
 # content/lab_engine.py
-# SHARED ENGINE FOR ALL CHAPTERS (Radio Fix + SVG + SHA-256)
+# SHARED ENGINE FOR ALL CHAPTERS (Left-Aligned RadioButtons)
 # ==========================================================
 import ipywidgets as widgets
 from IPython.display import display
@@ -257,9 +257,10 @@ def launch_lab(chapter_code, chapter_title, mcq_data, pseudo_tasks, missions_spe
     header_widget = widgets.HTML(value=f"""
     <style>
       .jupyter-widgets.widget-html, .widget-html > .widget-html-content, .jp-RenderedHTMLCommon {{ height: auto !important; max-height: none !important; overflow: visible !important; }}
-      .jupyter-widgets.widget-radio-box {{ height: auto !important; max-height: none !important; overflow: visible !important; margin: 6px 0 !important; }}
-      .widget-radio-box label {{ display: flex !important; align-items: flex-start !important; height: auto !important; min-height: 26px !important; line-height: 1.4 !important; margin-bottom: 8px !important; white-space: normal !important; word-break: break-word !important; font-family: sans-serif !important; font-size: 0.88rem !important; cursor: pointer; }}
-      .widget-radio-box input[type="radio"] {{ margin: 3px 8px 0 0 !important; flex-shrink: 0 !important; }}
+      .jupyter-widgets.widget-radio-box {{ display: flex !important; flex-direction: column !important; align-items: flex-start !important; justify-content: flex-start !important; width: 100% !important; height: auto !important; max-height: none !important; overflow: visible !important; margin: 6px 0 !important; padding: 0 !important; }}
+      .widget-radio-box .widget-label {{ display: none !important; width: 0 !important; }}
+      .widget-radio-box label {{ display: flex !important; flex-direction: row !important; align-items: flex-start !important; justify-content: flex-start !important; text-align: left !important; width: 100% !important; height: auto !important; min-height: 26px !important; line-height: 1.4 !important; margin: 0 0 8px 0 !important; padding: 0 !important; white-space: normal !important; word-break: break-word !important; font-family: sans-serif !important; font-size: 0.88rem !important; cursor: pointer; }}
+      .widget-radio-box input[type="radio"] {{ margin: 3px 10px 0 2px !important; flex-shrink: 0 !important; order: -1 !important; }}
       .lab-header {{ background: linear-gradient(135deg, #1e3a8a, #1e40af); color: white; padding: 14px 18px; border-radius: 8px; margin-bottom: 8px; font-family: sans-serif; }}
       .book-badge {{ display: inline-block; background: rgba(255,255,255,0.18); color: #e0f2fe; padding: 2px 8px; border-radius: 12px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }}
       .lab-header h1 {{ margin: 0 0 2px 0; font-size: 1.3rem; color: white; line-height: 1.25; }}
@@ -388,7 +389,12 @@ def launch_lab(chapter_code, chapter_title, mcq_data, pseudo_tasks, missions_spe
         h = f"<h4 style='margin:0 0 4px 0; font-family:sans-serif;'>{q['title']}</h4><p style='margin:0 0 6px 0; font-family:sans-serif; font-size:0.9rem;'>{q['prompt']}</p>"
         if q.get('code'):
             h += f"<div class='code-card'>{q['code']}</div>"
-        rb = widgets.RadioButtons(options=q['options'], value=None, layout=widgets.Layout(width='98%', height='auto'))
+        rb = widgets.RadioButtons(
+            options=q['options'],
+            value=None,
+            style={'description_width': '0px'},
+            layout=widgets.Layout(width='100%', height='auto', margin='4px 0')
+        )
         btn = widgets.Button(description="Check", button_style="primary", layout=widgets.Layout(width='110px', height='32px'))
         fb_html = widgets.HTML(value="")
 
@@ -405,7 +411,10 @@ def launch_lab(chapter_code, chapter_title, mcq_data, pseudo_tasks, missions_spe
             return _cb
 
         btn.on_click(make_mcq_cb())
-        mcq_cards.append(widgets.VBox([widgets.HTML(value=h), rb, btn, fb_html], layout=widgets.Layout(border='1px solid #cbd5e1', padding='10px', margin='0 0 10px 0')))
+        mcq_cards.append(widgets.VBox(
+            [widgets.HTML(value=h), rb, btn, fb_html],
+            layout=widgets.Layout(border='1px solid #cbd5e1', padding='10px', margin='0 0 10px 0', align_items='flex-start')
+        ))
 
     stage1_container = widgets.VBox(mcq_cards)
 
