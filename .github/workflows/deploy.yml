@@ -1,52 +1,50 @@
-name: Build and Deploy
+name: Deploy Voici to GitHub Pages
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - '*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install mamba
+      - name: Setup Mamba environment
         uses: mamba-org/setup-micromamba@v1
         with:
-          micromamba-version: '1.5.8-0'
-          environment-file: 'build-environment.yml'
+          environment-file: environment.yml
+          environment-name: voici-env
 
-      - name: Build the JupyterLite site
-        shell: bash -l {0}
-        run: voici build --execute --contents content --output-dir _output
+      - name: Build Voici site
+        shell: bash -el {0}
+        run: |
+          pip install voici
+          voici build --contents content --output-dir _output
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist
+          path: ./_output
 
   deploy:
-    needs: build
-    if: github.ref == 'refs/heads/main'
-    permissions:
-      pages: write
-      id-token: write
-
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
     runs-on: ubuntu-latest
+    needs: build
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
