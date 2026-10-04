@@ -285,7 +285,10 @@ def launch_lab(chapter_code, chapter_title, mcq_data, pseudo_tasks, missions_spe
       .test-table {{ width: 100%; border-collapse: collapse; font-family: sans-serif; font-size: 0.82rem; background: white; }}
       .test-table th {{ background: #f1f5f9; color: #1e293b; padding: 6px; border: 1px solid #cbd5e1; text-align: left; }}
       .test-table td {{ padding: 6px; border: 1px solid #cbd5e1; font-family: monospace; }}
-      .stamp-banner {{ background: #dcfce7; border: 2px dashed #16a34a; color: #14532d; padding: 10px; border-radius: 8px; margin: 6px 0; font-family: sans-serif; font-size: 0.88rem; font-weight: bold; text-align: center; }}
+      .stamp-banner {{ background: linear-gradient(135deg, #dcfce7, #bbf7d0); border: 3px solid #16a34a; color: #14532d; padding: 18px 16px; border-radius: 12px; margin: 12px 0; font-family: sans-serif; text-align: center; box-shadow: 0 6px 16px rgba(22, 163, 74, 0.18); }}
+      .stamp-title {{ font-size: 1.35rem; font-weight: 800; color: #14532d; margin-bottom: 6px; }}
+      .stamp-sub {{ font-size: 1.02rem; font-weight: 600; color: #166534; margin-bottom: 10px; }}
+      .stamp-code {{ display: inline-block; background: #ffffff; color: #1e40af; padding: 6px 16px; border-radius: 8px; border: 2px dashed #1e40af; font-family: monospace; font-size: 1.4rem; font-weight: 800; letter-spacing: 1.5px; margin-top: 4px; }}
       .flow-wrap {{ text-align: center; padding: 12px 8px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; overflow-x: auto; }}
       .lab-footer {{ text-align: center; color: #64748b; font-family: sans-serif; font-size: 0.78rem; margin-top: 14px; padding-top: 8px; border-top: 1px solid #cbd5e1; }}
     </style>
@@ -366,11 +369,22 @@ def launch_lab(chapter_code, chapter_title, mcq_data, pseudo_tasks, missions_spe
             pin_hash = digest[7:12]
             suffix = r[-3:] if len(r) >= 3 else r
             chap_num = chapter_code.replace("CH", "")
+            
+            # Auto-scrolls smoothly to the stamp banner when it first appears
+            scroll_trigger = (
+                "<img src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' "
+                "onload=\"var el = document.getElementById('mastery-stamp-anchor'); "
+                "if(el){ el.scrollIntoView({behavior: 'smooth', block: 'center'}); }\" "
+                "style='display:none;'/>"
+            )
+            
             stamp_box.value = (
-                f"<div class='stamp-banner'>"
-                f"&#127881; <strong>Chapter {chap_num} Mastered!</strong> (Roll No: {r} &bull; Score: {total_score}/{max_score})<br>"
-                f"<span style='font-weight:normal; color:#166534;'>Write this verification code in your book:</span> "
-                f"<span style='background:#ffffff; color:#1e40af; padding:2px 8px; border-radius:4px; border:1px solid #86efac; font-family:monospace; font-size:0.95rem;'>{chapter_code}-{suffix}-{pin_hash}</span>"
+                f"<div id='mastery-stamp-anchor' class='stamp-banner'>"
+                f"<div class='stamp-title'>&#127881; Chapter {chap_num} Mastered!</div>"
+                f"<div class='stamp-sub'>Roll No: <strong>{r}</strong> &bull; Final Score: <strong>{total_score}/{max_score}</strong><br>"
+                f"Write this verification code in your book:</div>"
+                f"<div class='stamp-code'>{chapter_code}-{suffix}-{pin_hash}</div>"
+                f"{scroll_trigger}"
                 f"</div>"
             )
     def on_lock_roll(_):
