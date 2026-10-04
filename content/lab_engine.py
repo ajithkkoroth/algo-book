@@ -343,12 +343,12 @@ def launch_lab(chapter_code, chapter_title, mcq_data, pseudo_tasks, missions_spe
         tabs.set_title(0, f"1. MCQs ({m_done}/{NUM_MCQ})")
         if m_done == NUM_MCQ:
             stage2_container.children = [stage2_content]
-            tabs.set_title(1, f"2. Pseudo ({p_done}/{NUM_PSEUDO})")
+            tabs.set_title(1, f"2. Pseudocode ({p_done}/{NUM_PSEUDO})")
             if auto_switch and p_done == 0 and tabs.selected_index == 0:
                 tabs.selected_index = 1
         else:
             stage2_container.children = [stage2_lock_msg]
-            tabs.set_title(1, "🔒 2. Pseudo")
+            tabs.set_title(1, "🔒 2. Pseudocode")
 
         if m_done == NUM_MCQ and p_done == NUM_PSEUDO:
             stage3_container.children = [stage3_content]
@@ -365,8 +365,14 @@ def launch_lab(chapter_code, chapter_title, mcq_data, pseudo_tasks, missions_spe
             digest = hashlib.sha256(secret_input.encode("utf-8")).hexdigest().upper()
             pin_hash = digest[7:12]
             suffix = r[-3:] if len(r) >= 3 else r
-            stamp_box.value = f"<div class='stamp-banner'>&#127881; {chapter_code} STAMP FOR {r}: <span style='color:#1e40af;'>{chapter_code}-{suffix}-{pin_hash}</span> (Score: {total_score}/{max_score})</div>"
-
+            chap_num = chapter_code.replace("CH", "")
+            stamp_box.value = (
+                f"<div class='stamp-banner'>"
+                f"&#127881; <strong>Chapter {chap_num} Mastered!</strong> (Roll No: {r} &bull; Score: {total_score}/{max_score})<br>"
+                f"<span style='font-weight:normal; color:#166534;'>Write this verification code in your book:</span> "
+                f"<span style='background:#ffffff; color:#1e40af; padding:2px 8px; border-radius:4px; border:1px solid #86efac; font-family:monospace; font-size:0.95rem;'>{chapter_code}-{suffix}-{pin_hash}</span>"
+                f"</div>"
+            )
     def on_lock_roll(_):
         val = roll_input.value.strip().upper()
         if len(val) < 1:
