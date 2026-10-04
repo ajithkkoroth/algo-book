@@ -1,6 +1,7 @@
 # ==========================================================
 # content/lab_engine.py
-# SHARED ENGINE FOR ALL CHAPTERS (Left-Aligned RadioButtons)
+# SHARED ENGINE FOR ALL CHAPTERS
+# (Left Roll No + Left RadioButtons + Textbook SVG + SHA-256 + Auto-Scroll)
 # ==========================================================
 import ipywidgets as widgets
 from IPython.display import display
@@ -257,6 +258,7 @@ def launch_lab(chapter_code, chapter_title, mcq_data, pseudo_tasks, missions_spe
     header_widget = widgets.HTML(value=f"""
     <style>
       .jupyter-widgets.widget-html, .widget-html > .widget-html-content, .jp-RenderedHTMLCommon {{ height: auto !important; max-height: none !important; overflow: visible !important; }}
+      .widget-text .widget-label {{ text-align: left !important; padding-left: 0 !important; margin-right: 6px !important; font-weight: 600 !important; }}
       .jupyter-widgets.widget-radio-box {{ display: flex !important; flex-direction: column !important; align-items: flex-start !important; justify-content: flex-start !important; width: 100% !important; height: auto !important; max-height: none !important; overflow: visible !important; margin: 6px 0 !important; padding: 0 !important; }}
       .widget-radio-box .widget-label {{ display: none !important; width: 0 !important; }}
       .widget-radio-box label {{ display: flex !important; flex-direction: row !important; align-items: flex-start !important; justify-content: flex-start !important; text-align: left !important; width: 100% !important; height: auto !important; min-height: 26px !important; line-height: 1.4 !important; margin: 0 0 8px 0 !important; padding: 0 !important; white-space: normal !important; word-break: break-word !important; font-family: sans-serif !important; font-size: 0.88rem !important; cursor: pointer; }}
@@ -301,10 +303,22 @@ def launch_lab(chapter_code, chapter_title, mcq_data, pseudo_tasks, missions_spe
 
     footer_widget = widgets.HTML(value=f"<div class='lab-footer'><strong>{book_title}</strong> &bull; {author_name}</div>")
 
-    roll_input = widgets.Text(placeholder="e.g. 12 or 26EC012", description="Roll No:", layout=widgets.Layout(width='210px', margin='0 6px 0 0'))
-    lock_roll_btn = widgets.Button(description="Lock Roll No & Start", button_style="primary", layout=widgets.Layout(width='155px', height='30px'))
+    roll_input = widgets.Text(
+        placeholder="e.g. 12 or 26EC012",
+        description="Roll No:",
+        style={'description_width': 'initial'},
+        layout=widgets.Layout(width='200px', margin='0 8px 0 0')
+    )
+    lock_roll_btn = widgets.Button(
+        description="Lock Roll No & Start",
+        button_style="primary",
+        layout=widgets.Layout(width='155px', height='30px')
+    )
     roll_status_html = widgets.HTML(value="")
-    roll_bar = widgets.HBox([roll_input, lock_roll_btn], layout=widgets.Layout(align_items='center', margin='0 0 6px 0'))
+    roll_bar = widgets.HBox(
+        [roll_input, lock_roll_btn],
+        layout=widgets.Layout(align_items='center', justify_content='flex-start', width='100%', margin='0 0 6px 0')
+    )
 
     p_row1 = widgets.HTML(layout=widgets.Layout(margin='0 6px 0 0', width='auto'))
     p_row2 = widgets.HTML(layout=widgets.Layout(margin='0 6px 0 0', width='auto'))
@@ -369,15 +383,14 @@ def launch_lab(chapter_code, chapter_title, mcq_data, pseudo_tasks, missions_spe
             pin_hash = digest[7:12]
             suffix = r[-3:] if len(r) >= 3 else r
             chap_num = chapter_code.replace("CH", "")
-            
-            # Auto-scrolls smoothly to the stamp banner when it first appears
+
             scroll_trigger = (
                 "<img src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' "
                 "onload=\"var el = document.getElementById('mastery-stamp-anchor'); "
                 "if(el){ el.scrollIntoView({behavior: 'smooth', block: 'center'}); }\" "
                 "style='display:none;'/>"
             )
-            
+
             stamp_box.value = (
                 f"<div id='mastery-stamp-anchor' class='stamp-banner'>"
                 f"<div class='stamp-title'>&#127881; Chapter {chap_num} Mastered!</div>"
@@ -387,6 +400,7 @@ def launch_lab(chapter_code, chapter_title, mcq_data, pseudo_tasks, missions_spe
                 f"{scroll_trigger}"
                 f"</div>"
             )
+
     def on_lock_roll(_):
         val = roll_input.value.strip().upper()
         if len(val) < 1:
