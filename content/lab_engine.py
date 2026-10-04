@@ -346,12 +346,12 @@ def launch_lab(chapter_code, chapter_title, mcq_data, pseudo_tasks, missions_spe
         tabs.set_title(0, f"1. MCQs ({m_done}/{NUM_MCQ})")
         if m_done == NUM_MCQ:
             stage2_container.children = [stage2_content]
-            tabs.set_title(1, f"2. Pseudocode ({p_done}/{NUM_PSEUDO})")
+            tabs.set_title(1, f"2. Pseudo ({p_done}/{NUM_PSEUDO})")
             if auto_switch and p_done == 0 and tabs.selected_index == 0:
                 tabs.selected_index = 1
         else:
             stage2_container.children = [stage2_lock_msg]
-            tabs.set_title(1, "🔒 2. Pseudocode")
+            tabs.set_title(1, "🔒 2. Pseudo")
 
         if m_done == NUM_MCQ and p_done == NUM_PSEUDO:
             stage3_container.children = [stage3_content]
